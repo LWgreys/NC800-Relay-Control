@@ -135,7 +135,7 @@
             // configIpPortbutton
             // 
             resources.ApplyResources(configIpPortbutton, "configIpPortbutton");
-            configIpPortbutton.BackColor = Color.Red;
+            configIpPortbutton.BackColor = Color.DarkRed;
             configIpPortbutton.ForeColor = Color.Yellow;
             configIpPortbutton.Name = "configIpPortbutton";
             configIpPortbutton.UseVisualStyleBackColor = false;

@@ -228,13 +228,16 @@
     <value>Relay 8  OFF</value>
   </data>
   <data name="relayAllOnOffbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
+    <value>Top, Left, Right</value>
   </data>
   <data name="relayAllOnOffbutton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 11.25pt, style=Bold</value>
   </data>
   <data name="relayAllOnOffbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="relayAllOnOffbutton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>97, 188</value>
   </data>
   <data name="relayAllOnOffbutton.Size" type="System.Drawing.Size, System.Drawing">
     <value>136, 38</value>
@@ -252,13 +255,16 @@
     <value>NoControl</value>
   </data>
   <data name="Exitbutton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 325</value>
+    <value>183, 258</value>
   </data>
   <data name="Exitbutton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 38</value>
+    <value>136, 38</value>
   </data>
   <data name="Exitbutton.Text" xml:space="preserve">
     <value>EXIT</value>
+  </data>
+  <data name="configIpPortbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
   </data>
   <data name="configIpPortbutton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 11.25pt, style=Bold</value>
@@ -267,16 +273,16 @@
     <value>NoControl</value>
   </data>
   <data name="configIpPortbutton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 265</value>
+    <value>12, 258</value>
   </data>
   <data name="configIpPortbutton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>171, 38</value>
+    <value>136, 38</value>
   </data>
   <data name="configIpPortbutton.Text" xml:space="preserve">
-    <value>Config IP / Port</value>
+    <value>Config IP/Port</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>331, 375</value>
+    <value>331, 308</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>

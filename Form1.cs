@@ -245,41 +245,49 @@ namespace NC800_Control
             ChangeRelayState(1);
         }
 
+        // ***** Relay 2 change state
         private void relay2button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(2);
         }
 
+        // ***** Relay 3 change state
         private void relay3button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(3);
         }
 
+        // ***** Relay 4 change state
         private void relay4button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(4);
         }
 
+        // ***** Relay 5 change state
         private void relay5button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(5);
         }
 
+        // ***** Relay 6 change state
         private void relay6button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(6);
         }
 
+        // ***** Relay 7 change state
         private void relay7button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(7);
         }
 
+        // ***** Relay 8 change state
         private void relay8button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(8);
         }
 
+        // ***** Relay 9 All change state
         private void relayAllOnOffbutton_Click(object sender, EventArgs e)
         {
             ChangeRelayState(9);
