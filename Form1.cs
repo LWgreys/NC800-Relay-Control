@@ -1,0 +1,271 @@
+
+using System;
+using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.Win32;
+
+
+namespace NC800_Control
+{
+
+    public partial class MainForm : Form
+    {
+        public readonly int MaxNumRelays = 8;
+        public readonly string nc800_default_ip = "192.168.1.4";
+        public readonly string nc800_default_pdir = "30000";
+        public readonly string RegKey = "HKEY_LOCAL_MACHINE\\SOFTWARE\\NC800";
+        public readonly string subKeyIP = "IPaddress";
+        public readonly string subKeyPortDir = "PortDir";
+        public string nc800_ip, nc800_pdir;
+        public string relayStatus = "";
+        public string relayOnOffStatus = "";
+
+        HttpClient NC800client = new HttpClient();
+
+        // ***** Main Program
+        public MainForm()
+        {
+            InitializeComponent();
+
+            // Read Registery stored IP & PortDirectory if exist otherwise set to defaults
+            nc800_ip = (string)Registry.GetValue(RegKey, subKeyIP, null);
+            if (nc800_ip == null)
+                nc800_ip = nc800_default_ip;
+
+            nc800_pdir = (string)Registry.GetValue(RegKey, subKeyPortDir, null);
+            if (nc800_pdir == null)
+                nc800_pdir = nc800_default_pdir;
+
+            // Retrieve and process NC800 relay status
+            NC800Status();
+
+            // Continue running until Exit button is pressed to exit program
+
+        }
+
+        // ***** Get NC800 Relays Status
+        public async void NC800Status()
+        {
+            int n;
+
+            try
+            {
+                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
+                if (responseMessage.IsSuccessStatusCode)
+                    relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/99");
+
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message;
+                string til = "NC800 Error";
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Process returned status
+            n = relayStatus.IndexOf("TUX");
+            relayOnOffStatus = relayStatus.Substring(n - 16, 16);
+            relayStatus = relayOnOffStatus;
+            for (n = 0; n < MaxNumRelays; n++)
+            {
+                switch (n + 1)
+                {
+                    case 1: // Relay 1
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay1button.BackColor = Color.Green;
+                            relay1button.Text = "Relay 1 ON";
+                        }
+                        else
+                        {
+                            relay1button.BackColor = Color.DarkRed;
+                            relay1button.Text = "Relay 1 OFF";
+                        }
+                        break;
+                    case 2: // Relay 2
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay2button.BackColor = Color.Green;
+                            relay2button.Text = "Relay 2 ON";
+                        }
+                        else
+                        {
+                            relay2button.BackColor = Color.DarkRed;
+                            relay2button.Text = "Relay 2 OFF";
+                        }
+                        break;
+                    case 3: // Relay 3
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay3button.BackColor = Color.Green;
+                            relay3button.Text = "Relay 3 ON";
+                        }
+                        else
+                        {
+                            relay3button.BackColor = Color.DarkRed;
+                            relay3button.Text = "Relay 3 OFF";
+                        }
+                        break;
+                    case 4: // Relay 4
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay4button.BackColor = Color.Green;
+                            relay4button.Text = "Relay 4 ON";
+                        }
+                        else
+                        {
+                            relay4button.BackColor = Color.DarkRed;
+                            relay4button.Text = "Relay 4 OFF";
+                        }
+                        break;
+                    case 5: // Relay 5
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay5button.BackColor = Color.Green;
+                            relay5button.Text = "Relay 5 ON";
+                        }
+                        else
+                        {
+                            relay5button.BackColor = Color.DarkRed;
+                            relay5button.Text = "Relay 5 OFF";
+                        }
+                        break;
+                    case 6: // Relay 6
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay6button.BackColor = Color.Green;
+                            relay6button.Text = "Relay 6 ON";
+                        }
+                        else
+                        {
+                            relay6button.BackColor = Color.DarkRed;
+                            relay6button.Text = "Relay 6 OFF";
+                        }
+                        break;
+                    case 7: // Relay 7
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay7button.BackColor = Color.Green;
+                            relay7button.Text = "Relay 7 ON";
+                        }
+                        else
+                        {
+                            relay7button.BackColor = Color.DarkRed;
+                            relay7button.Text = "Relay 7 OFF";
+                        }
+                        break;
+                    case 8: // Relay 8
+                        if (relayOnOffStatus[n] == '1')
+                        {
+                            relay8button.BackColor = Color.Green;
+                            relay8button.Text = "Relay 8 ON";
+                        }
+                        else
+                        {
+                            relay8button.BackColor = Color.DarkRed;
+                            relay8button.Text = "Relay 8 OFF";
+                        }
+                        break;
+                }
+            }
+
+        }
+
+        // ***** Exit Program
+        public void ExitApp(object sender, EventArgs e)
+        {
+            NC800client.Dispose();
+            Application.Exit();
+        }
+
+        // ***** Change relay state ON or OFF
+        private async void ChangeRelayState(int RelayNumber)
+        {
+            int n;
+            string OnOff;
+
+            // Get NC800 relay status
+            // NC800Status();
+
+            // Calculate relay state and change its state
+            n = RelayNumber * 2;
+            //if (relayOnOffStatus[RelayNumber - 1] == '0')
+            if (relayStatus[RelayNumber - 1] == '0')
+                n -= 1;
+            else
+                n -= 2;
+
+            OnOff = string.Format("{0:00}", n);
+
+            // Send change relay state
+            try
+            {
+                // var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
+                // if (responseMessage.IsSuccessStatusCode)
+                    // relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
+                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message;
+                string til = "NC800 Error";
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
+                // return;
+            }
+            // Get NC800 status again
+            NC800Status();
+        }
+
+        // ***** Relay 1 change state
+        private void relay1button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(1);
+        }
+
+        private void relay2button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(2);
+        }
+
+        private void relay3button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(3);
+        }
+
+        private void relay4button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(4);
+        }
+
+        private void relay5button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(5);
+        }
+
+        private void relay6button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(6);
+        }
+
+        private void relay7button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(7);
+        }
+
+        private void relay8button_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(8);
+        }
+    }
+}
