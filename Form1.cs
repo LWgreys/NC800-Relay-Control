@@ -47,7 +47,7 @@ namespace NC800_Control
             // Retrieve and process NC800 relay status
             NC800Status();
 
-            // Continue running until Exit button is pressed to exit program
+            // Continue running program until Exit button is pressed to exit
 
         }
 
@@ -178,7 +178,16 @@ namespace NC800_Control
                         break;
                 }
             }
-
+            if ((relayOnOffStatus == "1111111100000000") || (relayOnOffStatus == "1111111111111111"))
+            {
+                relayAllOnOffbutton.BackColor = Color.Green;
+                relayAllOnOffbutton.Text = "All Relays OFF";
+            }
+            else
+            {
+                relayAllOnOffbutton.BackColor = Color.DarkRed;
+                relayAllOnOffbutton.Text = "All Relays ON";
+            }
         }
 
         // ***** Exit Program
@@ -194,26 +203,31 @@ namespace NC800_Control
             int n;
             string OnOff;
 
-            // Get NC800 relay status
-            // NC800Status();
-
-            // Calculate relay state and change its state
-            n = RelayNumber * 2;
-            //if (relayOnOffStatus[RelayNumber - 1] == '0')
-            if (relayStatus[RelayNumber - 1] == '0')
-                n -= 1;
+            // If relay number = 9 for all do all relays
+            if (RelayNumber == 9)
+            {
+                if ((relayOnOffStatus == "1111111100000000") || (relayOnOffStatus == "1111111111111111"))
+                    OnOff = "44";
+                else
+                    OnOff = "45";
+            }
             else
-                n -= 2;
+            {
+                // Calculate relay state
+                n = RelayNumber * 2;
+                if (relayStatus[RelayNumber - 1] == '0')
+                    n -= 1;
+                else
+                    n -= 2;
+                OnOff = string.Format("{0:00}", n);
+            }
 
-            OnOff = string.Format("{0:00}", n);
-
-            // Send change relay state
+            // Send changed relay state
             try
             {
-                // var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
-                // if (responseMessage.IsSuccessStatusCode)
-                    // relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
                 var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
+                if (responseMessage.IsSuccessStatusCode)
+                    NC800Status();
             }
             catch (Exception e)
             {
@@ -223,8 +237,6 @@ namespace NC800_Control
                 DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
                 // return;
             }
-            // Get NC800 status again
-            NC800Status();
         }
 
         // ***** Relay 1 change state
@@ -266,6 +278,11 @@ namespace NC800_Control
         private void relay8button_Click(object sender, EventArgs e)
         {
             ChangeRelayState(8);
+        }
+
+        private void relayAllOnOffbutton_Click(object sender, EventArgs e)
+        {
+            ChangeRelayState(9);
         }
     }
 }

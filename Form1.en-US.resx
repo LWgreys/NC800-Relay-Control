@@ -227,34 +227,19 @@
   <data name="relay8button.Text" xml:space="preserve">
     <value>Relay 8  OFF</value>
   </data>
-  <data name="relayAllOFFbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="relayAllOnOffbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
   </data>
-  <data name="relayAllOFFbutton.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="relayAllOnOffbutton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 11.25pt, style=Bold</value>
   </data>
-  <data name="relayAllOFFbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="relayAllOnOffbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="relayAllOFFbutton.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="relayAllOnOffbutton.Size" type="System.Drawing.Size, System.Drawing">
     <value>136, 38</value>
   </data>
-  <data name="relayAllOFFbutton.Text" xml:space="preserve">
-    <value>All Relays  OFF</value>
-  </data>
-  <data name="relayAllONbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="relayAllONbutton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 11.25pt, style=Bold</value>
-  </data>
-  <data name="relayAllONbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="relayAllONbutton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>136, 38</value>
-  </data>
-  <data name="relayAllONbutton.Text" xml:space="preserve">
+  <data name="relayAllOnOffbutton.Text" xml:space="preserve">
     <value>All Relays  ON</value>
   </data>
   <data name="Exitbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -265,6 +250,9 @@
   </data>
   <data name="Exitbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="Exitbutton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>104, 325</value>
   </data>
   <data name="Exitbutton.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 38</value>
@@ -277,6 +265,9 @@
   </data>
   <data name="configIpPortbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="configIpPortbutton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>80, 265</value>
   </data>
   <data name="configIpPortbutton.Size" type="System.Drawing.Size, System.Drawing">
     <value>171, 38</value>
