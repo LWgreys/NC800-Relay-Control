@@ -27,6 +27,7 @@ namespace NC800_Control
         public string nc800_ip, nc800_pdir;
         public string relayStatus = "";
         public string relayOnOffStatus = "";
+        static readonly object OutIn = new object();
 
         HttpClient NC800client = new HttpClient();
 
@@ -45,7 +46,8 @@ namespace NC800_Control
                 nc800_pdir = nc800_default_pdir;
 
             // Retrieve and process NC800 relay status
-            NC800Status();
+            lock(OutIn)
+                NC800Status();
 
             // Continue running program until Exit button is pressed to exit
 
@@ -74,7 +76,7 @@ namespace NC800_Control
 
             // Process returned status
             n = relayStatus.IndexOf("TUX");
-            relayOnOffStatus = relayStatus.Substring(n - 16, 16);
+            relayOnOffStatus = relayStatus.Substring(n - 16, 8);
             relayStatus = relayOnOffStatus;
             for (n = 0; n < MaxNumRelays; n++)
             {
@@ -178,15 +180,18 @@ namespace NC800_Control
                         break;
                 }
             }
-            if ((relayOnOffStatus == "1111111100000000") || (relayOnOffStatus == "1111111111111111"))
+            // Set the status of All relays button
+            if (relayOnOffStatus == "11111111") 
             {
+                // If all relays are ON
                 relayAllOnOffbutton.BackColor = Color.Green;
-                relayAllOnOffbutton.Text = "All Relays OFF";
+                relayAllOnOffbutton.Text = "All Relays ON";
             }
             else
             {
+                // If not all relays are ON
                 relayAllOnOffbutton.BackColor = Color.DarkRed;
-                relayAllOnOffbutton.Text = "All Relays ON";
+                relayAllOnOffbutton.Text = "All Relays OFF";
             }
         }
 
@@ -206,19 +211,20 @@ namespace NC800_Control
             // If relay number = 9 for all do all relays
             if (RelayNumber == 9)
             {
-                if ((relayOnOffStatus == "1111111100000000") || (relayOnOffStatus == "1111111111111111"))
-                    OnOff = "44";
+                if (relayOnOffStatus == "11111111")
+                    OnOff = "44"; // All relays OFF
                 else
-                    OnOff = "45";
+                    OnOff = "45"; // All relays ON
             }
             else
             {
-                // Calculate relay state
-                n = RelayNumber * 2;
-                if (relayStatus[RelayNumber - 1] == '0')
-                    n -= 1;
+                // Calculate relay state '00' to '15'
+                n = RelayNumber * 2; // Double the relay number
+                if (relayStatus[RelayNumber - 1] == '0') // Check the status of the relay
+                    n -= 1; // If OFF then set it to turn ON
                 else
-                    n -= 2;
+                    n -= 2; // If ON then set it to turn OFF
+                
                 OnOff = string.Format("{0:00}", n);
             }
 
@@ -227,7 +233,8 @@ namespace NC800_Control
             {
                 var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
                 if (responseMessage.IsSuccessStatusCode)
-                    NC800Status();
+                    lock(OutIn)
+                        NC800Status();
             }
             catch (Exception e)
             {
@@ -293,10 +300,10 @@ namespace NC800_Control
             ChangeRelayState(9);
         }
 
-        // ***** Config IP address / Port (Directory)
+        // ***** Config IP address/port (Directory)
         private void configIpPortbutton_Click(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
