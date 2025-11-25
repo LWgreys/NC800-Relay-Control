@@ -292,5 +292,11 @@ namespace NC800_Control
         {
             ChangeRelayState(9);
         }
+
+        // ***** Config IP address / Port (Directory)
+        private void configIpPortbutton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

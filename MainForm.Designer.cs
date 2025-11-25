@@ -139,6 +139,7 @@
             configIpPortbutton.ForeColor = Color.Yellow;
             configIpPortbutton.Name = "configIpPortbutton";
             configIpPortbutton.UseVisualStyleBackColor = false;
+            configIpPortbutton.Click += configIpPortbutton_Click;
             // 
             // MainForm
             // 
