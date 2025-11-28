@@ -303,7 +303,11 @@ namespace NC800_Control
         // ***** Config IP address/port (Directory)
         private void configIpPortbutton_Click(object sender, EventArgs e)
         {
-            
+            FormChangeIPport changeIPport = new FormChangeIPport();
+            changeIPport.regKey = RegKey;
+            changeIPport.regKeyIP = subKeyIP;
+            changeIPport.regKeyPort = subKeyPortDir;
+            changeIPport.ShowDialog();
         }
     }
 }
