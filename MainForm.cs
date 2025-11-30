@@ -15,7 +15,6 @@ using Microsoft.Win32;
 
 namespace NC800_Control
 {
-
     public partial class MainForm : Form
     {
         public readonly int MaxNumRelays = 8;
@@ -237,10 +236,14 @@ namespace NC800_Control
             // Send changed relay state
             try
             {
-                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
+                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
                 if (responseMessage.IsSuccessStatusCode)
-                    lock(OutIn)
-                        NC800Status();
+                {
+                    responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
+                    if (responseMessage.IsSuccessStatusCode)
+                        lock (OutIn)
+                            NC800Status();
+                }
             }
             catch (Exception e)
             {
@@ -310,8 +313,6 @@ namespace NC800_Control
         // ***** Config IP address/port (Directory)
         private async Task configIpPortbutton_Click(object sender, EventArgs e)
         {
-            // string postStr;
-
             FormChangeIPport changeIPport = new FormChangeIPport();
             changeIPport.regKey = RegKey;
             changeIPport.regKeyIP = subKeyIP;
@@ -327,19 +328,28 @@ namespace NC800_Control
             var content = new FormUrlEncodedContent(postStr);
             try
             {
-                var response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_pdir}", content);
-                if (response.IsSuccessStatusCode)
-                    checkRegistryValues();
+                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_pdir}", content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Registry.SetValue(RegKey, subKeyIP, changeIPport._postStr[0]);
+                        Registry.SetValue(RegKey, subKeyPortDir, changeIPport._postStr[1]);
+                        checkRegistryValues();
+                    }
+                    else
+                        return;
+                }
                 else
                     return;
             }
             catch (Exception fe)
             {
-                string msg = fe.Message;
-                string til = "NC800 Error";
+                string message = fe.Message;
+                string title = "NC800 Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
-                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
-                // return;
+                DialogResult results = MessageBox.Show(message, title, buttons, MessageBoxIcon.Error);
 
             }
         }
