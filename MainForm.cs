@@ -311,7 +311,7 @@ namespace NC800_Control
 
 
         // ***** Config IP address/port (Directory)
-        private async Task configIpPortbutton_Click(object sender, EventArgs e)
+        private async void IpPortChangebutton_Click(object sender, EventArgs e)
         {
             FormChangeIPport changeIPport = new FormChangeIPport();
             changeIPport.regKey = RegKey;
@@ -350,7 +350,6 @@ namespace NC800_Control
                 string title = "NC800 Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult results = MessageBox.Show(message, title, buttons, MessageBoxIcon.Error);
-
             }
         }
     }

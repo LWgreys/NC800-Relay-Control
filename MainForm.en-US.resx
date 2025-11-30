@@ -263,23 +263,27 @@
   <data name="Exitbutton.Text" xml:space="preserve">
     <value>EXIT</value>
   </data>
-  <data name="configIpPortbutton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left, Right</value>
+  <data name="configIpPortbutton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
   </data>
-  <data name="configIpPortbutton.Font" type="System.Drawing.Font, System.Drawing">
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="configIpPortbutton.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="IP_PortChange.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="IP_PortChange.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 11.25pt, style=Bold</value>
   </data>
-  <data name="configIpPortbutton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="IP_PortChange.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="configIpPortbutton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 258</value>
-  </data>
-  <data name="configIpPortbutton.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="IP_PortChange.Size" type="System.Drawing.Size, System.Drawing">
     <value>136, 38</value>
   </data>
-  <data name="configIpPortbutton.Text" xml:space="preserve">
-    <value>Config IP/Port</value>
+  <data name="IP_PortChange.Text" xml:space="preserve">
+    <value>Change IP/Port</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>331, 308</value>

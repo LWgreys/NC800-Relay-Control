@@ -40,6 +40,7 @@
             relayAllOnOffbutton = new Button();
             Exitbutton = new Button();
             configIpPortbutton = new Button();
+            IP_PortChange = new Button();
             SuspendLayout();
             // 
             // relay1button
@@ -135,11 +136,16 @@
             // configIpPortbutton
             // 
             resources.ApplyResources(configIpPortbutton, "configIpPortbutton");
-            configIpPortbutton.BackColor = Color.DarkRed;
-            configIpPortbutton.ForeColor = Color.Yellow;
             configIpPortbutton.Name = "configIpPortbutton";
-            configIpPortbutton.UseVisualStyleBackColor = false;
-            configIpPortbutton.Click += configIpPortbutton_Click;
+            // 
+            // IP_PortChange
+            // 
+            resources.ApplyResources(IP_PortChange, "IP_PortChange");
+            IP_PortChange.BackColor = Color.DarkRed;
+            IP_PortChange.ForeColor = Color.Yellow;
+            IP_PortChange.Name = "IP_PortChange";
+            IP_PortChange.UseVisualStyleBackColor = false;
+            IP_PortChange.Click += IpPortChangebutton_Click;
             // 
             // MainForm
             // 
@@ -147,7 +153,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Gray;
             ControlBox = false;
-            Controls.Add(configIpPortbutton);
+            Controls.Add(IP_PortChange);
             Controls.Add(Exitbutton);
             Controls.Add(relayAllOnOffbutton);
             Controls.Add(relay8button);
@@ -176,5 +182,6 @@
         private Button relayAllOnOffbutton;
         private Button Exitbutton;
         private Button configIpPortbutton;
+        private Button IP_PortChange;
     }
 }
