@@ -67,8 +67,11 @@ namespace NC800_Control
             {
                 var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
                 if (responseMessage.IsSuccessStatusCode)
-                    relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/99");
-
+                {
+                    responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/40");
+                    if (responseMessage.IsSuccessStatusCode)
+                        relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/99");
+                }
             }
             catch (Exception e)
             {
@@ -314,6 +317,10 @@ namespace NC800_Control
         private async void IpPortChangebutton_Click(object sender, EventArgs e)
         {
             FormChangeIPport changeIPport = new FormChangeIPport();
+            changeIPport.ipAddress = nc800_ip;
+            changeIPport.portNumber = nc800_pdir;
+            changeIPport.DefaultIP = nc800_default_ip;
+            changeIPport.DefaultPort = nc800_default_pdir;
             changeIPport.regKey = RegKey;
             changeIPport.regKeyIP = subKeyIP;
             changeIPport.regKeyPort = subKeyPortDir;
@@ -322,8 +329,8 @@ namespace NC800_Control
                 return;
             var postStr = new Dictionary<string, string>
             {
-                { "username", changeIPport._postStr[0] },
-                { "password", changeIPport._postStr[1] }
+                { "username", changeIPport.postStrIP },
+                { "password", changeIPport.postStrPort }
             };
             var content = new FormUrlEncodedContent(postStr);
             try
@@ -334,8 +341,8 @@ namespace NC800_Control
                     var response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_pdir}", content);
                     if (response.IsSuccessStatusCode)
                     {
-                        Registry.SetValue(RegKey, subKeyIP, changeIPport._postStr[0]);
-                        Registry.SetValue(RegKey, subKeyPortDir, changeIPport._postStr[1]);
+                        Registry.SetValue(RegKey, subKeyIP, changeIPport.postStrIP);
+                        Registry.SetValue(RegKey, subKeyPortDir, changeIPport.postStrPort);
                         checkRegistryValues();
                     }
                     else
