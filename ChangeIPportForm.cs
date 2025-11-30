@@ -13,11 +13,14 @@ namespace NC800_Control
 {
     public partial class FormChangeIPport : Form
     {
+        public bool _form_status;
         public string ipAddress;
         public string portNumber;
         public string regKey;
         public string regKeyIP;
         public string regKeyPort;
+        public string[] _postStr;
+
 
         public FormChangeIPport()
         {
@@ -27,6 +30,7 @@ namespace NC800_Control
         // ***** Make changes to IP/Port
         private void buttonChangeStore_Click(object sender, EventArgs e)
         {
+            _form_status = false;
             ushort[] IPnum = new ushort[] { 0, 0, 0, 0, 0 };
             string[] IPsplit = textBoxIPaddress.Text.Split('.');
             ushort n = 0;
@@ -42,16 +46,17 @@ namespace NC800_Control
             }
             if ((textBoxPortNumber.Text == "") || (Convert.ToInt32(textBoxPortNumber.Text) == 0))
             {
-
+                MessageBox.Show("Enter numbers 1 to 65535", "Port Number Error", MessageBoxButtons.OK);
                 return;
             }
-            string _post = "";
-
+            _postStr[0] = textBoxIPaddress.Text;
+            _postStr[1] = textBoxPortNumber.Text;
         }
 
         // ***** Cancel changes
         private void buttonCancelChanges_Click(object sender, EventArgs e)
         {
+            _form_status = false;
             Close();
         }
 

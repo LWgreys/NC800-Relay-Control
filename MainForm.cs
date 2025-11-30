@@ -36,14 +36,7 @@ namespace NC800_Control
         {
             InitializeComponent();
 
-            // Read Registery stored IP & PortDirectory if exist otherwise set to defaults
-            nc800_ip = (string)Registry.GetValue(RegKey, subKeyIP, null);
-            if (nc800_ip == null)
-                nc800_ip = nc800_default_ip;
-
-            nc800_pdir = (string)Registry.GetValue(RegKey, subKeyPortDir, null);
-            if (nc800_pdir == null)
-                nc800_pdir = nc800_default_pdir;
+            checkRegistryValues();
 
             // Retrieve and process NC800 relay status
             lock(OutIn)
@@ -52,6 +45,19 @@ namespace NC800_Control
             // Continue running program until Exit button is pressed to exit
 
         }
+
+        private void checkRegistryValues()
+        {
+            // Read Registery stored IP & PortDirectory if exist otherwise set to defaults
+            nc800_ip = (string)Registry.GetValue(RegKey, subKeyIP, null);
+            if (nc800_ip == null)
+                nc800_ip = nc800_default_ip;
+
+            nc800_pdir = (string)Registry.GetValue(RegKey, subKeyPortDir, null);
+            if (nc800_pdir == null)
+                nc800_pdir = nc800_default_pdir;
+        }
+
 
         // ***** Get NC800 Relays Status
         public async void NC800Status()
@@ -300,14 +306,42 @@ namespace NC800_Control
             ChangeRelayState(9);
         }
 
+
         // ***** Config IP address/port (Directory)
-        private void configIpPortbutton_Click(object sender, EventArgs e)
+        private async Task configIpPortbutton_Click(object sender, EventArgs e)
         {
+            // string postStr;
+
             FormChangeIPport changeIPport = new FormChangeIPport();
             changeIPport.regKey = RegKey;
             changeIPport.regKeyIP = subKeyIP;
             changeIPport.regKeyPort = subKeyPortDir;
             changeIPport.ShowDialog();
+            if (changeIPport._form_status == false)
+                return;
+            var postStr = new Dictionary<string, string>
+            {
+                { "username", changeIPport._postStr[0] },
+                { "password", changeIPport._postStr[1] }
+            };
+            var content = new FormUrlEncodedContent(postStr);
+            try
+            {
+                var response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_pdir}", content);
+                if (response.IsSuccessStatusCode)
+                    checkRegistryValues();
+                else
+                    return;
+            }
+            catch (Exception fe)
+            {
+                string msg = fe.Message;
+                string til = "NC800 Error";
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
+                // return;
+
+            }
         }
     }
 }
