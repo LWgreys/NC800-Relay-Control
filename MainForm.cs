@@ -83,7 +83,7 @@ namespace NC800_Control
             // Process returned status
             string searchString = $"//{nc800_ip}/{nc800_port}/";
             n = relayStatus.IndexOf(searchString);
-            relayOnOffStatus = relayStatus.Substring(n + searchString.Length, 8);
+            relayOnOffStatus = relayStatus.Substring(n + searchString.Length, MaxNumRelays);
             relayStatus = relayOnOffStatus;
             for (n = 0; n < MaxNumRelays; n++)
             {
