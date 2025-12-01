@@ -1,7 +1,6 @@
 
 using System;
 using System.IO;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -29,7 +28,6 @@ namespace NC800_Control
         public string relayOnOffStatus = "";
         static readonly object OutIn = new object();
 
-        HttpClient NC800client = new HttpClient();
         RegistryKey NC800 = Registry.CurrentUser.CreateSubKey(subKeyStr);
 
         // ***** Main Program
@@ -65,6 +63,7 @@ namespace NC800_Control
         {
             int n;
 
+            HttpClient NC800client = new HttpClient();
             try
             {
                 var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
@@ -79,12 +78,13 @@ namespace NC800_Control
                 DialogResult results = MessageBox.Show(e.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
                 return;
             }
-
             // Process returned status
             string searchString = $"//{nc800_ip}/{nc800_port}/";
             n = relayStatus.IndexOf(searchString);
             relayOnOffStatus = relayStatus.Substring(n + searchString.Length, MaxNumRelays);
             relayStatus = relayOnOffStatus;
+            NC800client.Dispose();
+
             for (n = 0; n < MaxNumRelays; n++)
             {
                 switch (n + 1)
@@ -205,7 +205,7 @@ namespace NC800_Control
         // ***** Exit Program
         private void ExitApp(object sender, EventArgs e)
         {
-            NC800client.Dispose();
+            //NC800client.Dispose();
             Application.Exit();
         }
 
@@ -236,6 +236,7 @@ namespace NC800_Control
             }
 
             // Send changed relay state
+            HttpClient NC800client = new HttpClient();
             try
             {
                 var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
@@ -251,8 +252,9 @@ namespace NC800_Control
             {
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult results = MessageBox.Show(e.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
-                // return;
             }
+            NC800client.Dispose();
+
         }
 
         // ***** Relay 1 change state
@@ -335,6 +337,7 @@ namespace NC800_Control
             var content = new FormUrlEncodedContent(postStr);
             var contentStr = await content.ReadAsStringAsync(); // This line is for debugging purpose
 
+            HttpClient NC800client = new HttpClient();
             try
             {
                 var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
@@ -357,6 +360,8 @@ namespace NC800_Control
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult results = MessageBox.Show(fe.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
             }
+            NC800client.Dispose();
+
         }
     }
 }
