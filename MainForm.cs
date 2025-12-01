@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -20,15 +21,16 @@ namespace NC800_Control
         public readonly int MaxNumRelays = 8;
         public readonly string nc800_default_ip = "192.168.1.4";
         public readonly string nc800_default_pdir = "30000";
-        public readonly string RegKey = "HKEY_LOCAL_MACHINE\\SOFTWARE\\NC800";
-        public readonly string subKeyIP = "IPaddress";
-        public readonly string subKeyPortDir = "PortDir";
-        public string nc800_ip, nc800_pdir;
+        static string subKeyStr = "SOFTWARE\\NC800"; // Stored under HKEY_CURRENT_USER
+        public readonly string keyValueIP = "IPaddress";
+        public readonly string keyValuePort = "PortDir";
+        public string nc800_ip, nc800_port;
         public string relayStatus = "";
         public string relayOnOffStatus = "";
         static readonly object OutIn = new object();
 
         HttpClient NC800client = new HttpClient();
+        RegistryKey NC800 = Registry.CurrentUser.CreateSubKey(subKeyStr);
 
         // ***** Main Program
         public MainForm()
@@ -48,43 +50,40 @@ namespace NC800_Control
         private void checkRegistryValues()
         {
             // Read Registery stored IP & PortDirectory if exist otherwise set to defaults
-            nc800_ip = (string)Registry.GetValue(RegKey, subKeyIP, null);
+            nc800_ip = (string)NC800.GetValue(keyValueIP);
             if (nc800_ip == null)
                 nc800_ip = nc800_default_ip;
 
-            nc800_pdir = (string)Registry.GetValue(RegKey, subKeyPortDir, null);
-            if (nc800_pdir == null)
-                nc800_pdir = nc800_default_pdir;
+            nc800_port = (string)NC800.GetValue(keyValuePort);
+            if (nc800_port == null)
+                nc800_port = nc800_default_pdir;
         }
 
 
         // ***** Get NC800 Relays Status
-        public async void NC800Status()
+        private async void NC800Status()
         {
             int n;
 
             try
             {
-                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
-                if (responseMessage.IsSuccessStatusCode)
+                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                if (response.IsSuccessStatusCode)
                 {
-                    responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/40");
-                    if (responseMessage.IsSuccessStatusCode)
-                        relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_pdir}/99");
+                    relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_port}/99");
                 }
             }
             catch (Exception e)
             {
-                string msg = e.Message;
-                string til = "NC800 Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
-                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
+                DialogResult results = MessageBox.Show(e.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
                 return;
             }
 
             // Process returned status
-            n = relayStatus.IndexOf("TUX");
-            relayOnOffStatus = relayStatus.Substring(n - 16, 8);
+            string searchString = $"//{nc800_ip}/{nc800_port}/";
+            n = relayStatus.IndexOf(searchString);
+            relayOnOffStatus = relayStatus.Substring(n + searchString.Length, 8);
             relayStatus = relayOnOffStatus;
             for (n = 0; n < MaxNumRelays; n++)
             {
@@ -204,7 +203,7 @@ namespace NC800_Control
         }
 
         // ***** Exit Program
-        public void ExitApp(object sender, EventArgs e)
+        private void ExitApp(object sender, EventArgs e)
         {
             NC800client.Dispose();
             Application.Exit();
@@ -239,21 +238,19 @@ namespace NC800_Control
             // Send changed relay state
             try
             {
-                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
-                if (responseMessage.IsSuccessStatusCode)
+                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                if (response.IsSuccessStatusCode)
                 {
-                    responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}/{OnOff}");
-                    if (responseMessage.IsSuccessStatusCode)
+                    response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}/{OnOff}");
+                    if (response.IsSuccessStatusCode)
                         lock (OutIn)
                             NC800Status();
                 }
             }
             catch (Exception e)
             {
-                string msg = e.Message;
-                string til = "NC800 Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
-                DialogResult results = MessageBox.Show(msg, til, buttons, MessageBoxIcon.Error);
+                DialogResult results = MessageBox.Show(e.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
                 // return;
             }
         }
@@ -317,46 +314,48 @@ namespace NC800_Control
         private async void IpPortChangebutton_Click(object sender, EventArgs e)
         {
             FormChangeIPport changeIPport = new FormChangeIPport();
-            changeIPport.ipAddress = nc800_ip;
-            changeIPport.portNumber = nc800_pdir;
+            changeIPport._ipAddress = nc800_ip;
+            changeIPport._portNumber = nc800_port;
             changeIPport.DefaultIP = nc800_default_ip;
             changeIPport.DefaultPort = nc800_default_pdir;
-            changeIPport.regKey = RegKey;
-            changeIPport.regKeyIP = subKeyIP;
-            changeIPport.regKeyPort = subKeyPortDir;
+            changeIPport.regKey = subKeyStr;
+            changeIPport.regKeyIP = keyValueIP;
+            changeIPport.regKeyPort = keyValuePort;
             changeIPport.ShowDialog();
             if (changeIPport._form_status == false)
                 return;
+            
             var postStr = new Dictionary<string, string>
             {
-                { "username", changeIPport.postStrIP },
-                { "password", changeIPport.postStrPort }
+                { "action", "login"},
+                { "UserName", changeIPport.postStrIP },
+                { "PassWord", changeIPport.postStrPort }
             };
+
             var content = new FormUrlEncodedContent(postStr);
+            var contentStr = await content.ReadAsStringAsync(); // This line is for debugging purpose
+
             try
             {
-                var responseMessage = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_pdir}");
-                if (responseMessage.IsSuccessStatusCode)
+                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_pdir}", content);
+                    response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_port}", content);
                     if (response.IsSuccessStatusCode)
                     {
-                        Registry.SetValue(RegKey, subKeyIP, changeIPport.postStrIP);
-                        Registry.SetValue(RegKey, subKeyPortDir, changeIPport.postStrPort);
+                        NC800.SetValue(keyValueIP, changeIPport.postStrIP);
+                        NC800.SetValue(keyValuePort, changeIPport.postStrPort);
                         checkRegistryValues();
+                        NC800Status();
                     }
                     else
                         return;
                 }
-                else
-                    return;
             }
             catch (Exception fe)
             {
-                string message = fe.Message;
-                string title = "NC800 Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
-                DialogResult results = MessageBox.Show(message, title, buttons, MessageBoxIcon.Error);
+                DialogResult results = MessageBox.Show(fe.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
             }
         }
     }

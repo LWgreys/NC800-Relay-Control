@@ -5,6 +5,7 @@ using System.Data;
 using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,8 +18,8 @@ namespace NC800_Control
         public bool _form_status;
         public string DefaultIP;
         public string DefaultPort;
-        public string ipAddress;
-        public string portNumber;
+        public string _ipAddress;
+        public string _portNumber;
         public string regKey;
         public string regKeyIP;
         public string regKeyPort;
@@ -34,13 +35,12 @@ namespace NC800_Control
         // ***** Make changes to IP/Port
         private void buttonChangeStore_Click(object sender, EventArgs e)
         {
-            _form_status = false;
-            
             if (checkInputValues())
             {
                 postStrIP = textBoxIPaddress.Text;
                 postStrPort = textBoxPortNumber.Text;
                 _form_status = true;
+                Close();
             }
         }
 
@@ -54,7 +54,7 @@ namespace NC800_Control
             foreach (string num in IPsplit)
             {
                 IPnum[n] = Convert.ToUInt16(num);
-                if ((IPnum[n] > 254) || (n > 3) || (textBoxIPaddress.Text == ""))
+                if ((IPnum[n] > 254) || (IPnum[n] < 1) || (n > 3) || (textBoxIPaddress.Text == ""))
                 {
                     MessageBox.Show("Enter numbers 1 to 254 like NNN.NNN.NNN.NNN", "IP Address Error", MessageBoxButtons.OK);
                     return false;
@@ -79,22 +79,15 @@ namespace NC800_Control
         // ***** Set default values
         private void buttonSetDefaults_Click(object sender, EventArgs e)
         {
-            textBoxIPaddress.Text = ipAddress;
-            textBoxPortNumber.Text = portNumber;
-
+            textBoxIPaddress.Text = DefaultIP;
+            textBoxPortNumber.Text = DefaultPort;
         }
 
         private void FormChangeIPport_Load(object sender, EventArgs e)
         {
-            // Read Registery stored IP & PortDirectory if exist otherwise set to defaults
-            var ip = (string)Registry.GetValue(regKey, regKeyIP, "");
-            if (ip != "")
-                textBoxIPaddress.Text = ipAddress;
-
-            var port = (string)Registry.GetValue(regKey, regKeyPort, "");
-            if (port != "")
-                textBoxPortNumber.Text = portNumber;
-
+            _form_status = false;
+            textBoxIPaddress.Text = _ipAddress;
+            textBoxPortNumber.Text = _portNumber;
         }
     }
 }
