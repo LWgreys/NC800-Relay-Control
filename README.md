@@ -7,5 +7,4 @@ Work as far as turning ON & OFF relays, but still having problems in changing th
 A little more DEBUGGING needing.
 
 I use the registery key HKEY_CURRENT_USER\SOFTWARE\NC800 to store the IP address & Port number. So if you RESET you NC800 relay control board, you will need to delete that registery item also.
-Maybe I'll add in a auto delete key incase an unreachable IP/Port.
-
+Maybe I'll add in a auto delete key incase an unreachable IP/Port or an option to reset the IP/Port on start if unreachable.
