@@ -63,13 +63,13 @@ namespace NC800_Control
         {
             int n;
 
-            HttpClient NC800client = new HttpClient();
+            HttpClient NC800client1 = new HttpClient();
             try
             {
-                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                var response = await NC800client1.GetAsync($"http://{nc800_ip}/{nc800_port}");
                 if (response.IsSuccessStatusCode)
                 {
-                    relayStatus = await NC800client.GetStringAsync($"http://{nc800_ip}/{nc800_port}/99");
+                    relayStatus = await NC800client1.GetStringAsync($"http://{nc800_ip}/{nc800_port}/99");
                 }
             }
             catch (Exception e)
@@ -83,7 +83,7 @@ namespace NC800_Control
             n = relayStatus.IndexOf(searchString);
             relayOnOffStatus = relayStatus.Substring(n + searchString.Length, MaxNumRelays);
             relayStatus = relayOnOffStatus;
-            NC800client.Dispose();
+            NC800client1.Dispose();
 
             for (n = 0; n < MaxNumRelays; n++)
             {
@@ -205,7 +205,6 @@ namespace NC800_Control
         // ***** Exit Program
         private void ExitApp(object sender, EventArgs e)
         {
-            //NC800client.Dispose();
             Application.Exit();
         }
 
@@ -236,13 +235,13 @@ namespace NC800_Control
             }
 
             // Send changed relay state
-            HttpClient NC800client = new HttpClient();
+            HttpClient NC800client2 = new HttpClient();
             try
             {
-                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                var response = await NC800client2.GetAsync($"http://{nc800_ip}/{nc800_port}");
                 if (response.IsSuccessStatusCode)
                 {
-                    response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}/{OnOff}");
+                    response = await NC800client2.GetAsync($"http://{nc800_ip}/{nc800_port}/{OnOff}");
                     if (response.IsSuccessStatusCode)
                         lock (OutIn)
                             NC800Status();
@@ -253,7 +252,7 @@ namespace NC800_Control
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult results = MessageBox.Show(e.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
             }
-            NC800client.Dispose();
+            NC800client2.Dispose();
 
         }
 
@@ -337,13 +336,13 @@ namespace NC800_Control
             var content = new FormUrlEncodedContent(postStr);
             var contentStr = await content.ReadAsStringAsync(); // This line is for debugging purpose
 
-            HttpClient NC800client = new HttpClient();
+            HttpClient NC800client3 = new HttpClient();
             try
             {
-                var response = await NC800client.GetAsync($"http://{nc800_ip}/{nc800_port}");
+                var response = await NC800client3.GetAsync($"http://{nc800_ip}/{nc800_port}");
                 if (response.IsSuccessStatusCode)
                 {
-                    response = await NC800client.PostAsync($"http://{nc800_ip}/{nc800_port}", content);
+                    response = await NC800client3.PostAsync($"http://{nc800_ip}/{nc800_port}", content);
                     if (response.IsSuccessStatusCode)
                     {
                         NC800.SetValue(keyValueIP, changeIPport.postStrIP);
@@ -360,7 +359,7 @@ namespace NC800_Control
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult results = MessageBox.Show(fe.Message, "NC800 Error", buttons, MessageBoxIcon.Error);
             }
-            NC800client.Dispose();
+            NC800client3.Dispose();
 
         }
     }
