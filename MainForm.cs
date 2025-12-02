@@ -1,4 +1,4 @@
-
+/*
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+*/
 using Microsoft.Win32;
 
 
@@ -349,6 +350,8 @@ namespace NC800_Control
                     if (response.IsSuccessStatusCode)
                     {
                         NC800client3.Dispose();
+                        NC800.DeleteValue(keyValueIP);
+                        NC800.DeleteValue(keyValuePort);
                         NC800.SetValue(keyValueIP, changeIPport.postStrIP);
                         NC800.SetValue(keyValuePort, changeIPport.postStrPort);
                         checkRegistryValues();
