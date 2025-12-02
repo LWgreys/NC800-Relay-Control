@@ -243,8 +243,11 @@ namespace NC800_Control
                 {
                     response = await NC800client2.GetAsync($"http://{nc800_ip}/{nc800_port}/{OnOff}");
                     if (response.IsSuccessStatusCode)
+                    {
+                        NC800client2.Dispose();
                         lock (OutIn)
                             NC800Status();
+                    }
                 }
             }
             catch (Exception e)
@@ -345,10 +348,11 @@ namespace NC800_Control
                     response = await NC800client3.PostAsync($"http://{nc800_ip}/{nc800_port}", content);
                     if (response.IsSuccessStatusCode)
                     {
+                        NC800client3.Dispose();
                         NC800.SetValue(keyValueIP, changeIPport.postStrIP);
                         NC800.SetValue(keyValuePort, changeIPport.postStrPort);
                         checkRegistryValues();
-                        NC800Status();
+                        // NC800Status();
                     }
                     else
                         return;
