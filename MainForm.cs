@@ -43,7 +43,6 @@ namespace NC800_Control
                 NC800Status();
 
             // Continue running program until Exit button is pressed
-
         }
 
         private void checkRegistryValues()
