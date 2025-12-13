@@ -273,9 +273,6 @@
   <data name="IP_PortChange.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="IP_PortChange.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="IP_PortChange.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 11.25pt, style=Bold</value>
   </data>
