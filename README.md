@@ -1,8 +1,8 @@
 # NC800 Relay Control
 
-Written in C#. Still learning the language of C#. I wrote this program so as not to operate the NC800 network relay with a browser. Instead it's a stand alone program with all the conttrol buttons on one control page. 
+Written in C#. Still learning the language of C#. I wrote this program so as not to operate the NC800 network relay with a browser. Instead it's a stand alone program with all the control buttons on one control page. 
 
-Work as far as turning ON & OFF relays, but still having problems in changing the IPaddress/Port which works the first time, but no so the next time. Made a few changes to the client and now seems to work good.
+Work as far as turning ON & OFF relays, but still having problems in changing the IPaddress/Port which works the first time, but no so the next time. Made a few changes to the client and now seems to work.
 
 If you make changes to the IP/Port, wait a minute for the NC800 to complete its changes. That why I end the program after the change.
 
